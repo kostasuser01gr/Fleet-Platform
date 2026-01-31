@@ -1,0 +1,106 @@
+import { Rental, MaintenanceSchedule, Activity } from '../types/rental';
+
+export const mockRentals: Rental[] = [
+  {
+    id: '1',
+    vehicleId: '2',
+    customerName: 'John Smith',
+    customerEmail: 'john.smith@email.com',
+    startDate: new Date('2025-11-01'),
+    endDate: new Date('2025-11-08'),
+    totalDays: 7,
+    dailyRate: 350,
+    totalCost: 2450,
+    status: 'active',
+    rating: 5,
+  },
+  {
+    id: '2',
+    vehicleId: '1',
+    customerName: 'Sarah Johnson',
+    customerEmail: 'sarah.j@email.com',
+    startDate: new Date('2025-10-15'),
+    endDate: new Date('2025-10-20'),
+    totalDays: 5,
+    dailyRate: 120,
+    totalCost: 600,
+    status: 'completed',
+    rating: 4.8,
+    review: 'Great truck, very reliable!',
+  },
+  {
+    id: '3',
+    vehicleId: '3',
+    customerName: 'Michael Chen',
+    customerEmail: 'mchen@email.com',
+    startDate: new Date('2025-11-10'),
+    endDate: new Date('2025-11-15'),
+    totalDays: 5,
+    dailyRate: 450,
+    totalCost: 2250,
+    status: 'upcoming',
+  },
+];
+
+export const mockMaintenanceSchedule: MaintenanceSchedule[] = [
+  {
+    id: '1',
+    vehicleId: '4',
+    type: 'oil-change',
+    scheduledDate: new Date('2025-11-05'),
+    cost: 120,
+    status: 'in-progress',
+    notes: 'Regular maintenance',
+  },
+  {
+    id: '2',
+    vehicleId: '1',
+    type: 'tire-rotation',
+    scheduledDate: new Date('2025-11-12'),
+    cost: 80,
+    status: 'scheduled',
+  },
+  {
+    id: '3',
+    vehicleId: '2',
+    type: 'brake-service',
+    scheduledDate: new Date('2025-11-20'),
+    cost: 350,
+    status: 'scheduled',
+  },
+];
+
+export const mockActivities: Activity[] = [
+  {
+    id: '1',
+    type: 'rental',
+    title: 'New Rental Started',
+    description: 'Shelby GT350R rented to John Smith',
+    timestamp: new Date('2025-11-01T10:30:00'),
+    icon: 'car',
+  },
+  {
+    id: '2',
+    type: 'maintenance',
+    title: 'Maintenance Scheduled',
+    description: 'Oil change for Toyota Camry',
+    timestamp: new Date('2025-11-04T14:20:00'),
+    icon: 'wrench',
+  },
+  {
+    id: '3',
+    type: 'achievement',
+    title: 'Achievement Unlocked!',
+    description: 'Profit Maker - Earned over $50,000',
+    timestamp: new Date('2025-11-03T09:15:00'),
+    icon: 'trophy',
+  },
+  {
+    id: '4',
+    type: 'rental',
+    title: 'Rental Completed',
+    description: 'Ford F-150 returned by Sarah Johnson',
+    timestamp: new Date('2025-10-20T16:00:00'),
+    icon: 'check',
+  },
+];
