@@ -1,0 +1,313 @@
+/* Vehicle Garage Styles */
+.vehicle-garage {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.vehicle-bay {
+  position: relative;
+  min-height: 400px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.parts-inventory {
+  display: grid;
+  gap: 1rem;
+  animation: slideInRight 0.4s ease-out;
+}
+
+/* Part Card Animations */
+.part-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.part-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.part-card.installing {
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Cooperator Map Styles */
+.cooperator-map {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.cooperator-marker {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.cooperator-marker:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.cooperator-marker.unlocked {
+  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+}
+
+.cooperator-marker.locked {
+  filter: grayscale(50%) opacity(0.7);
+}
+
+/* Service Card Styles */
+.service-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.service-card:hover::before {
+  left: 100%;
+}
+
+/* Rarity Glow Effects */
+.rarity-common {
+  box-shadow: 0 0 10px rgba(107, 114, 128, 0.3);
+}
+
+.rarity-uncommon {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.rarity-rare {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+.rarity-epic {
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+  animation: epicGlow 2s ease-in-out infinite;
+}
+
+.rarity-legendary {
+  box-shadow: 0 0 25px rgba(249, 115, 22, 0.7);
+  animation: legendaryGlow 1.5s ease-in-out infinite;
+}
+
+/* Stats Display */
+.stat-boost-positive {
+  color: #10b981;
+  animation: statPulse 0.5s ease-out;
+}
+
+.stat-boost-negative {
+  color: #ef4444;
+  animation: statPulse 0.5s ease-out;
+}
+
+/* Progress Bars */
+.condition-bar {
+  height: 8px;
+  background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #10b981 100%);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+.condition-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Installation Animation */
+@keyframes installPart {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.part-installing {
+  animation: installPart 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Unlock Animation */
+@keyframes unlock {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cooperator-unlocking {
+  animation: unlock 0.8s ease-out;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes epicGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+  }
+}
+
+@keyframes legendaryGlow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.9);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes statPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .vehicle-bay {
+    min-height: 300px;
+    padding: 1rem;
+  }
+
+  .parts-inventory {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+  .vehicle-bay {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+  }
+
+  .part-card {
+    background: rgba(17, 24, 39, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .service-card {
+    background: rgba(17, 24, 39, 0.5);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Transition Classes */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Hover Effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+/* Loading States */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

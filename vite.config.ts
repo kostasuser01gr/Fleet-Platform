@@ -52,6 +52,18 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-redux'],
+            'vendor-ui': ['@radix-ui/react-tabs', '@radix-ui/react-dialog', '@radix-ui/react-select'],
+            'vendor-charts': ['recharts'],
+            'vendor-maps': ['@react-google-maps/api'],
+            'vendor-query': ['@tanstack/react-query', '@reduxjs/toolkit'],
+          },
+        },
+      },
     },
     server: {
       port: 3000,

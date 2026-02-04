@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
 import { Activity } from '../types/rental';
@@ -14,7 +15,7 @@ interface ActivityFeedProps {
   activities: Activity[];
 }
 
-export function ActivityFeed({ activities }: ActivityFeedProps) {
+export const ActivityFeed = React.memo(function ActivityFeed({ activities }: ActivityFeedProps) {
   const iconMap = {
     car: Car,
     wrench: Wrench,
@@ -93,4 +94,4 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
       </ScrollArea>
     </Card>
   );
-}
+});

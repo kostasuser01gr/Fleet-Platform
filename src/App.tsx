@@ -33,6 +33,13 @@ import { Leaderboard } from './components/Leaderboard';
 import { SkillTree } from './components/SkillTree';
 import { NotificationCenter, Notification } from './components/NotificationCenter';
 import { SettingsPanel } from './components/SettingsPanel';
+import { VehicleGarage } from './components/VehicleGarage';
+import { CooperatorMap } from './components/CooperatorMap';
+import { MissionDashboard } from './components/MissionDashboard';
+import { MarketTrends } from './components/MarketTrends';
+import { AchievementTracker } from './components/AchievementTracker';
+import { TutorialOverlay, useTutorial } from './components/TutorialOverlay';
+import { NotificationSystem, ToastNotification } from './components/NotificationSystem';
 import { RealtimeService } from './services/realtimeService';
 import { GamificationService } from './utils/gamification';
 import { Button } from './components/ui/button';
@@ -60,9 +67,18 @@ import {
   Bell,
   Settings as SettingsIcon,
   X,
-  ShoppingCart
+  ShoppingCart,
+  Warehouse,
+  Map,
+  TrendingUp,
+  Rocket
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { ThemeToggle } from './components/ui/theme-toggle';
+import { ConnectionStatus, ErrorBoundary } from './components/ConnectionStatus';
+import { websocketService } from './services/websocketService';
+import { useDebounce } from './utils/performance';
+import { EnhancedDashboard } from './components/EnhancedDashboard';
 
 interface UserLocation {
   lat: number;
@@ -75,7 +91,7 @@ type StatusFilter = (typeof STATUS_FILTER_VALUES)[number];
 const TYPE_FILTER_VALUES = ['all', 'sedan', 'suv', 'truck', 'sports', 'luxury'] as const;
 type TypeFilter = (typeof TYPE_FILTER_VALUES)[number];
 
-const TAB_VALUES = ['fleet', 'analytics', 'rentals', 'assembly', 'partners', 'chat', 'notes', 'quests', 'achievements', 'leaderboard', 'skills', 'progress'] as const;
+const TAB_VALUES = ['fleet', 'garage', 'cooperators', 'missions', 'market', 'analytics', 'rentals', 'assembly', 'partners', 'chat', 'notes', 'quests', 'achievements', 'leaderboard', 'skills', 'progress'] as const;
 type TabValue = (typeof TAB_VALUES)[number];
 
 export default function App() {
@@ -120,12 +136,33 @@ export default function App() {
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [toastNotifications, setToastNotifications] = useState<ToastNotification[]>([]);
+  
+  // Tutorial hook
+  const { hasCompletedTutorial, tutorialSteps, completeTutorial, skipTutorial } = useTutorial();
 
-  // Initialize real-time service
+  // Use debounced search for performance
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  // Initialize real-time services
   useEffect(() => {
     RealtimeService.connect();
+    websocketService.connect();
+    
+    // Subscribe to real-time updates
+    websocketService.subscribeToVehicleUpdates((vehicle) => {
+      setVehicles(prev => prev.map(v => v.id === vehicle.id ? vehicle : v));
+      toast.info('Vehicle Updated', {
+        description: `${vehicle.make} ${vehicle.model} has been updated`,
+      });
+    });
+
+    websocketService.subscribeToNotifications((notification) => {
+      setNotifications(prev => [notification, ...prev]);
+    });
+
     return () => {
       RealtimeService.disconnect();
+      websocketService.disconnect();
     };
   }, []);
 
@@ -188,12 +225,12 @@ export default function App() {
     setFleetStats(calculateFleetStats());
   }, [vehicles]);
 
-  // Filter vehicles
+  // Filter vehicles with debounced search
   const filteredVehicles = vehicles.filter(vehicle => {
     const matchesSearch = 
-      vehicle.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vehicle.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vehicle.licensePlate.toLowerCase().includes(searchQuery.toLowerCase());
+      vehicle.make.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+      vehicle.model.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+      vehicle.licensePlate.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || vehicle.status === statusFilter;
     const matchesType = typeFilter === 'all' || vehicle.type === typeFilter;
@@ -438,6 +475,22 @@ export default function App() {
               <Car className="w-4 h-4 mr-2" />
               Fleet Overview
             </TabsTrigger>
+            <TabsTrigger value="garage" className="data-[state=active]:bg-teal-600">
+              <Warehouse className="w-4 h-4 mr-2" />
+              Vehicle Garage
+            </TabsTrigger>
+            <TabsTrigger value="cooperators" className="data-[state=active]:bg-rose-600">
+              <Map className="w-4 h-4 mr-2" />
+              Service Network
+            </TabsTrigger>
+            <TabsTrigger value="missions" className="data-[state=active]:bg-indigo-600">
+              <Rocket className="w-4 h-4 mr-2" />
+              Missions
+            </TabsTrigger>
+            <TabsTrigger value="market" className="data-[state=active]:bg-yellow-600">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Market
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-purple-600">
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics
@@ -469,6 +522,10 @@ export default function App() {
             <TabsTrigger value="achievements" className="data-[state=active]:bg-amber-600">
               <Award className="w-4 h-4 mr-2" />
               Achievements
+            </TabsTrigger>
+            <TabsTrigger value="tracker" className="data-[state=active]:bg-fuchsia-600">
+              <Trophy className="w-4 h-4 mr-2" />
+              Achievement Tracker
             </TabsTrigger>
             <TabsTrigger value="leaderboard" className="data-[state=active]:bg-emerald-600">
               <Users className="w-4 h-4 mr-2" />
@@ -618,11 +675,15 @@ export default function App() {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-8 mt-8">
-            <Tabs defaultValue="basic" className="w-full">
+            <Tabs defaultValue="dashboard" className="w-full">
               <TabsList className="bg-gray-800/50 border border-gray-700 mb-6">
+                <TabsTrigger value="dashboard">Enhanced Dashboard</TabsTrigger>
                 <TabsTrigger value="basic">Basic Analytics</TabsTrigger>
                 <TabsTrigger value="advanced">Advanced Analytics</TabsTrigger>
               </TabsList>
+              <TabsContent value="dashboard">
+                <EnhancedDashboard vehicles={vehicles} rentals={rentals} />
+              </TabsContent>
               <TabsContent value="basic">
                 <AnalyticsDashboard />
               </TabsContent>
@@ -730,6 +791,26 @@ export default function App() {
             />
           </TabsContent>
 
+          {/* Vehicle Garage Tab */}
+          <TabsContent value="garage" className="space-y-8 mt-8">
+            <VehicleGarage />
+          </TabsContent>
+
+          {/* Service Cooperators Tab */}
+          <TabsContent value="cooperators" className="space-y-8 mt-8">
+            <CooperatorMap />
+          </TabsContent>
+
+          {/* Missions Tab */}
+          <TabsContent value="missions" className="space-y-8 mt-8">
+            <MissionDashboard />
+          </TabsContent>
+
+          {/* Market Tab */}
+          <TabsContent value="market" className="space-y-8 mt-8">
+            <MarketTrends />
+          </TabsContent>
+
           {/* Quests Tab */}
           <TabsContent value="quests" className="space-y-8 mt-8">
             <QuestSystem
@@ -741,6 +822,11 @@ export default function App() {
           {/* Achievements Tab */}
           <TabsContent value="achievements" className="space-y-8 mt-8">
             <AchievementGallery achievements={mockAchievements} />
+          </TabsContent>
+
+          {/* Achievement Tracker Tab */}
+          <TabsContent value="tracker" className="space-y-8 mt-8">
+            <AchievementTracker />
           </TabsContent>
 
           {/* Leaderboard Tab */}
@@ -842,6 +928,23 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Tutorial Overlay */}
+      {!hasCompletedTutorial && (
+        <TutorialOverlay
+          steps={tutorialSteps}
+          onComplete={completeTutorial}
+          onSkip={skipTutorial}
+        />
+      )}
+
+      {/* Toast Notifications */}
+      <NotificationSystem
+        notifications={toastNotifications}
+        onDismiss={(id) => {
+          setToastNotifications(toastNotifications.filter(n => n.id !== id));
+        }}
+      />
     </div>
   );
 }

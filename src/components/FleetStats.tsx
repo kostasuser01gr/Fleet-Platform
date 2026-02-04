@@ -1,3 +1,4 @@
+import React from 'react';
 import { FleetStats as FleetStatsType } from '../types/vehicle';
 import { Card } from './ui/card';
 import { Car, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
@@ -6,7 +7,7 @@ interface FleetStatsProps {
   stats: FleetStatsType;
 }
 
-export function FleetStats({ stats }: FleetStatsProps) {
+export const FleetStats = React.memo(function FleetStats({ stats }: FleetStatsProps) {
   const statCards = [
     {
       title: 'Total Vehicles',
@@ -58,4 +59,4 @@ export function FleetStats({ stats }: FleetStatsProps) {
       })}
     </div>
   );
-}
+});

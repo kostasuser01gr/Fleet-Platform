@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card } from './ui/card';
 import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
@@ -20,7 +21,7 @@ interface GameProgressProps {
   totalEarnings: number;
 }
 
-export function GameProgress({ level, xp, xpToNextLevel, totalEarnings }: GameProgressProps) {
+export const GameProgress = React.memo(function GameProgress({ level, xp, xpToNextLevel, totalEarnings }: GameProgressProps) {
   const xpPercentage = (xp / xpToNextLevel) * 100;
 
   const achievements = [
@@ -222,4 +223,4 @@ export function GameProgress({ level, xp, xpToNextLevel, totalEarnings }: GamePr
       </Card>
     </div>
   );
-}
+});

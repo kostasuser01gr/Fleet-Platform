@@ -1,3 +1,4 @@
+import React from 'react';
 import { Vehicle } from '../types/vehicle';
 import { Badge } from './ui/badge';
 import { Card } from './ui/card';
@@ -13,7 +14,7 @@ interface VehicleCardProps {
   showCheckbox?: boolean;
 }
 
-export function VehicleCard({ vehicle, onClick, isSelected, onSelect, showCheckbox }: VehicleCardProps) {
+export const VehicleCard = React.memo(function VehicleCard({ vehicle, onClick, isSelected, onSelect, showCheckbox }: VehicleCardProps) {
   const statusColors = {
     available: 'bg-green-500',
     rented: 'bg-blue-500',
@@ -98,4 +99,4 @@ export function VehicleCard({ vehicle, onClick, isSelected, onSelect, showCheckb
       </div>
     </Card>
   );
-}
+});
